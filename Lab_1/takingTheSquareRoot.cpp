@@ -4,16 +4,22 @@
 @purpose: This program takes the square root of a number
 */
 
+// include the iostream library for input and output
 #include <iostream>
+
+// include the cmath library for advanced math functions
 #include <cmath>
+
+// include the iomanip library to add manipulators to the formatting of inputs and outputs 
 #include <iomanip>
 
+//use the standard namespace to avoid having to use std:: before every standard library function
 using namespace std;
 
 int main()
 {
     // declaring number to be square rooted
-    double num, root;
+    float num, root;
 
     // asking and storing the number in num
     cout << "What number would you like to know the square root of to the nearest hundredth? ";

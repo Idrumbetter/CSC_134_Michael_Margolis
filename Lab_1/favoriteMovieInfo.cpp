@@ -4,8 +4,10 @@
 @purpose: This program prints a clean layout of my favorite movie and it's main characters
 */
 
+// include the iostream library for input and output
 #include <iostream>
 
+//use the standard namespace to avoid having to use std:: before every standard library function
 using namespace std;
 
 int main()

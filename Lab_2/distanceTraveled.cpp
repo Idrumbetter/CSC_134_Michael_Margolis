@@ -4,25 +4,27 @@
 @purpose: This program takes the velocity and time and returns how far the object has gone
 */
 
+// include the iostream library for input and output
 #include <iostream>
 
+//use the standard namespace to avoid having to use std:: before every standard library function
 using namespace std;
 
 int main()
 {
-    // declaring variables to be used (distance is x, velocity is v, time is t)
-    int x, v, t;
+    // declaring variables to be used (distance, velocity, and time)
+    int distance, velocity, time;
 
     // setting velocity equal to 80mph
-    v = 80;
+    velocity = 80;
 
     // setting time equal to 2 hours
-    t = 2;
+    time = 2;
 
     //taking the product of v and t to get distance
-    x = v * t;
+    distance = velocity * time;
 
-    cout << "The distance the object travels after " << t << " hours of going " << v << "mph is " << x << " miles!";
+    cout << "The distance the object travels after " << time << " hours of going " << velocity << "mph is " << distance << " miles!";
 
     return 0;
 }

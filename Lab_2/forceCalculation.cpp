@@ -4,9 +4,13 @@
 @purpose: This program calculates the Force on an object given it's acceleration and mass
 */
 
+// include the iostream library for input and output
 #include <iostream>
+
+// include the iomanip library to add manipulators to the formatting of inputs and outputs
 #include <iomanip>
 
+//use the standard namespace to avoid having to use std:: before every standard library function
 using namespace std;
 
 int main()

@@ -4,8 +4,10 @@
 @purpose: This program takes the current and resistance and returns the voltage
 */
 
+// include the iostream library for input and output
 #include <iostream>
 
+//use the standard namespace to avoid having to use std:: before every standard library function
 using namespace std;
 
 int main()
