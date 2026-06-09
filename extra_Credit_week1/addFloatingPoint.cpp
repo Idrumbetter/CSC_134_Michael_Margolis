@@ -13,7 +13,7 @@ using namespace std;
 int main()
 {
     //defining the floats number variables
-    double num1, num2, result;
+    double num1=0.0, num2=0.0, result=0.0;
 
     //asking user for any number and storing it in num1
     cout << "What is the first number you would like to add? ";

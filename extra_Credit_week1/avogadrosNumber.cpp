@@ -15,8 +15,10 @@ int main()
     //assigning a float for avogadros number
     float avogadro;
 
-    avogadro = 6.02214076E23;
-
-    cout << avogadro;
+    // assigning avogadros number to avogadro
+    avogadro =  6.02214076E23;
+    
+    // printing avogadros number to the terminal
+    cout << "This is Avogadro's number in E notation: " << avogadro;
     return 0;
 }

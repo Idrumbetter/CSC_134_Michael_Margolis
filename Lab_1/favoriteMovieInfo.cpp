@@ -12,52 +12,36 @@ using namespace std;
 
 int main()
 {
-    //Defining Variables
-    string movieTitle, characters, description, barLine, blankLine, blankSplit, tableHead, headerSplit;
-    
-    //A blank collumn to use to space out when needed
-    blankLine =  "#                                            #\n";
-    
-    //A blank bar to divide the page across it's length
-    barLine =     "##############################################\n";
-
-    //A blank split on a table 
-    blankSplit =  "#                      |                     #\n";
-
-    //a cross divider for under the header of the table
-    headerSplit = "#----------------------|---------------------#\n";
-
-    //A Actor/Actresses table header assigned to tableHead
-    tableHead = "#   Characters         |   Actors/Actresses  #\n";
-
-    //The title of the movie assigned to the variable movieTitle
-    movieTitle = "#             Project Hail Mary              #\n";
-
-    //The character and actor data assigned to the variable characters
-    characters = {"#   Ryland Grace       |   Ryan Gosling      #\n"
-                  "#   Eva Strat          |   Sandra Hüller    #\n"
-                  "#   Rocky              |   James Ortiz       #\n"
-                  "#   Officer Carl       |   Lionel Boyce      #\n"
-                  "#   Olesya Ilyukhina   |   Milana Vayntrub   #\n"
-    };          
-
-    //An overview of the moview assigned to the variable description
-    description = {"#                  Overview                  #\n"
-                   "#   Science teacher Ryland Grace wakes up    #\n"
-                   "#   on a spaceship with no recollection      #\n" 
-                   "#   of who he is or how he got there. As     #\n"
-                   "#   his memory slowly returns, he soon       #\n"
-                   "#   discovers he must solve the riddle       #\n"
-                   "#   behind a mysterious substance that's     #\n"
-                   "#   causing the sun to die out. As details   #\n" 
-                   "#   of the mission unravel, he calls on      #\n"
-                   "#   his scientific training and sheer        #\n"
-                   "#   ingenuity -- but he may not have to      #\n"
-                   "#               do it alone.                 #\n"
-    };
-
-    // printing the "poster" of the my favorite movie 
-    cout << barLine << blankLine << movieTitle << blankLine << barLine << blankSplit << tableHead << headerSplit << characters << barLine << blankLine << description << blankLine << barLine;
+    //printing a poster to the terminal
+    cout << "##############################################\n";
+    cout << "#                                            #\n";
+    cout << "#             Project Hail Mary              #\n";
+    cout << "#                                            #\n";
+    cout << "##############################################\n";
+    cout << "#                      |                     #\n";
+    cout << "#   Characters         |   Actors/Actresses  #\n";
+    cout << "#----------------------|---------------------#\n";
+    cout << "#   Ryland Grace       |   Ryan Gosling      #\n";
+    cout << "#   Eva Strat          |   Sandra Hüller    #\n";
+    cout << "#   Rocky              |   James Ortiz       #\n";
+    cout << "#   Officer Carl       |   Lionel Boyce      #\n";
+    cout << "#   Olesya Ilyukhina   |   Milana Vayntrub   #\n";
+    cout << "##############################################\n";
+    cout << "#                                            #\n";
+    cout << "#                  Overview                  #\n";
+    cout << "#   Science teacher Ryland Grace wakes up    #\n";
+    cout << "#   on a spaceship with no recollection      #\n"; 
+    cout << "#   of who he is or how he got there. As     #\n";
+    cout << "#   his memory slowly returns, he soon       #\n";
+    cout << "#   discovers he must solve the riddle       #\n";
+    cout << "#   behind a mysterious substance that's     #\n";
+    cout << "#   causing the sun to die out. As details   #\n";
+    cout << "#   of the mission unravel, he calls on      #\n";
+    cout << "#   his scientific training and sheer        #\n";
+    cout << "#   ingenuity -- but he may not have to      #\n";
+    cout << "#               do it alone.                 #\n";
+    cout << "#                                            #\n";
+    cout << "##############################################\n";
 
     return 0;
 }

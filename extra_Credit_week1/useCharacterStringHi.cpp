@@ -12,14 +12,18 @@ using namespace std;
 
 int main()
 {
+    // assigning the character class to letter
     char letter;
 
+    // assigning H to letter and printing
     letter = 'H';
     cout << letter;
     
+    //re-assigning i to letter and printing
     letter = 'i';
     cout << letter;
     
+    // re-assigning ! to letter and printing
     letter = '!';
     cout << letter;
 
