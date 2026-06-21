@@ -13,7 +13,7 @@ using namespace std;
 int main()
 {
     // declaring float variables and assigning them initial values
-    float newYork = 85, denver = 88, pheonix = 106;
+    float newYork = 85.00, denver = 88.00, pheonix = 106.00;
 
     // printing a message of the previous average temperature for New York
     cout << "The average temperature in New York City was " << newYork << (char)248 << "F but, after a 2% rise,\nwe are now seeing the average temperature at "; 
