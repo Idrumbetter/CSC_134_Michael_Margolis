@@ -28,13 +28,13 @@ int main()
         else
         // this rule can contradict with rule two so using it as the else of the if statement
         if (year % 100 == 0)
-        {cout << "Thhe year you enter " << year << " is not a leap year";}
+        {cout << "The year you enter " << year << " is not a leap year";}
         else
         // this means that its a leap year and it doesn't use the other two rules 
-        {cout << "The year you entered " << year << "is a leap year";}
+        {cout << "The year you entered " << year << " is a leap year";}
     }
     else
     // this prints because the fundamental requirement for a leap year was not met
-    cout << "The year you entered " << year << "is not a leap year";
+    cout << "The year you entered " << year << " is not a leap year";
     return 0;
 }
