@@ -23,6 +23,19 @@ struct PantryItem {
     double price;
 };
 
+struct Ingredient{
+    string name;
+    double amount;
+    string unit;
+};
+
+struct Recipe {
+    string title;
+    vector<Ingredient> ingredients;
+    vector<string> instructions;
+    double cost;
+};
+
 // =============================
 // Functions to call
 // =============================
@@ -48,9 +61,39 @@ void savePantry(const vector<PantryItem>& pantry) {
             outFile << item.price << "\n";
         }
         outFile.close();
-        cout << "Data saved successfully!\n";
+        cout << "Pantry saved successfully!\n";
     }
 }
+
+// this function saves the information to a .txt file
+void saveRecipe(const vector<Recipe>& recipeList) {
+    // opens a file for writing (creates the file if it doesn't exist)
+    ofstream outFile("recipe.txt");
+
+    if (!outFile.is_open()) {
+        cout << "Error: Could not open recipe.txt for writing.\n";
+        return;
+    }
+
+    for (const auto& item: recipeList) {
+        outFile << item.title << endl;
+        outFile << item.cost << endl;
+        outFile << item.ingredients.size() << endl;
+        for (const auto& ing: item.ingredients) {
+            outFile << ing.name << endl;
+            outFile << ing.amount << endl;
+            outFile << ing.unit << endl;
+        }
+
+        outFile << item.instructions.size() << endl;
+        for (const auto& line: item.instructions) {
+            outFile << line << endl;
+        }
+    }
+        outFile.close();
+        cout << "Recipes saved successfully!\n";
+    }
+
 
 // this function reads a stored file and converts the info back into useful data types and loads them
 vector<PantryItem> loadPantry() {
@@ -66,17 +109,82 @@ vector<PantryItem> loadPantry() {
             if (getline(inFile, qtyStr) && getline(inFile, priStr)) {
                 int quantity = stoi(qtyStr);
                 double price = stod(priStr);
-
                 loadedPantry.push_back({name, quantity, price});
             }
         }
         inFile.close();
         cout << "Data loaded Successfully!\n";
     } else {
-        cout << "No saved data found. Starting fresh. \n";
+        cout << "No saved pantry data found. Starting fresh. \n";
     }
 
     return loadedPantry;
+}
+
+// this function reads a stored file and converts the info back into useful data types and loads them
+vector<Recipe> loadRecipe() {
+    vector<Recipe> loadedRecipes;
+    ifstream inFile("recipe.txt");
+
+    if (inFile.is_open()) {
+        string title, costStr, ingSizeStr,insSizeStr;
+    
+        while (getline(inFile, title)) {
+            if (getline(inFile, costStr) && getline(inFile, ingSizeStr)) {
+                Recipe r;
+                r.title = title;
+                r.cost = stod(costStr);
+                
+                int ingSize = stoi(ingSizeStr);
+                for (int n=0; n < ingSize;++n) {
+                    string ingName, amtStr, unit;
+                    getline(inFile, ingName);
+                    getline(inFile, amtStr);
+                    getline(inFile, unit);
+                    r.ingredients.push_back({ingName, stod(amtStr),unit});
+                }
+
+                if (getline(inFile, insSizeStr)) {
+                    int insSize = stoi(insSizeStr);
+                    for (int n = 0; n < insSize; ++n) {
+                        string line;
+                        getline(inFile, line);
+                        r.instructions.push_back(line);
+                    }
+                }
+                loadedRecipes.push_back(r);
+            }
+        }
+        inFile.close();
+        cout << "Recipe data loaded Successfully!\n";
+    } else {
+        cout << "No saved recipe data found. Starting fresh. \n";
+    }
+    return loadedRecipes;
+}
+
+// this function updates the cost of a recipe based on the pantry pricing
+void calculateRecipeCost(Recipe& recipe, const vector<PantryItem>& pantry) {
+    double totalCost = 0.0;
+
+    for (const auto& ing : recipe.ingredients) {
+        bool found = false;
+
+        for (const auto& item: pantry){
+        if (toLowerCase(ing.name) == toLowerCase(item.name)){
+            if (item.quantity > 0) {
+                double unitPrice = item.price / item.quantity;
+                totalCost += (ing.amount * unitPrice);
+            }
+            found = true;
+            break;
+            }
+        }
+        if (!found) {
+            cout << "Warning: '" << ing.name << "' not found in the pantry. Cost calculation assumes $0 for this item.\n";
+        }
+    }
+    recipe.cost = totalCost;
 }
 
 // ==========================
@@ -85,21 +193,23 @@ vector<PantryItem> loadPantry() {
 int main() {
     //loading stored data
     vector<PantryItem> myPantry = loadPantry();
+    vector<Recipe> myRecipes = loadRecipe();
     char choice = '0';
 
     // a while loop that breaks when the user enters 4. This will continue running and asking for new inputs. 
-    while (choice != '4') {
+    while (choice != '6') {
 
         // pantry menu text to explain the options
         cout << "\n=== DIGITAL PANTRY MENU ===\n";
         cout << "1. View Pantry Stock\n";
         cout << "2. Add / Update Stock\n";
-        cout << "3. Consume / Remove Stock\n";
-        cout << "4. Save & Exit\n";
-        cout << "Enter your choice (1-4)"; 
+        cout << "3. View Cookbook\n";
+        cout << "4. Add / Update Recipes";
+        cout << "5. Consume / Remove Stock\n";
+        cout << "6. Save & Exit\n";
+        cout << "Enter your choice (1-6)"; 
         cin >> choice;
         cin.ignore();
-
         cout << "\n";
 
         switch (choice) {
@@ -120,6 +230,7 @@ int main() {
                 break;
             }
 
+            // add / update pantry stock
             case '2': {
                 char addMore;
                 do {
@@ -162,12 +273,111 @@ int main() {
             break;
             }
 
+            // view the list of recipes currently stored
             case '3': {
+                if (myRecipes.empty()) {
+                    cout << "Your cookbook is empty.\n";
+                }
+                else {
+                    cout << "Your current recipe list:\n";
+                    for (const auto& recipe : myRecipes) {
+                        cout << "\n===================================\n";
+                        cout << "- Recipe: " << recipe.title
+                             << " | Cost: $" << fixed << setprecision(2) << recipe.cost << endl;
+                        for (const auto& ing: recipe.ingredients) {
+                            cout << "  - " << ing.name << ": " << ing.amount << " " << ing.unit << endl;
+                        }
+
+                        cout << "Instruction:\n";
+                        int stepNum = 1;
+                        for (const auto& step: recipe.instructions) {
+                            cout << "  " << stepNum << ". " << step << endl;
+                            stepNum++;
+                        }
+                        }
+                        cout << "===================================\n";
+                    }
                 break;
             }
 
+            // this adds a Recipe/updates an existing recipe
             case '4': {
+                char addMore;
+                do {
+                Recipe newRecipe;
+
+                cout << "Enter the recipe title: ";
+                getline(cin, newRecipe.title);
+
+                // gather the ingredients for the recipe
+                char addIng = 'y';
+                cout << "--- Add Ingredients for " << newRecipe.title << " ---\n";
+                while (addIng == 'y' || addIng == 'Y') {
+                    Ingredient ing;
+                    cout << "Ingredient name: ";
+                    getline(cin, ing.name);
+                    cout << "Amount required: ";
+                    cin >> ing.amount;
+                    cin.ignore();
+                    cout << "Unit (e.g. cups, grams, pcs): ";
+                    getline(cin, ing.unit);
+
+                    newRecipe.ingredients.push_back(ing);
+                    cout << "Add another ingredient to this recipe? (y/n): ";
+                    cin >> addIng;
+                    cin.ignore();
+                }
+
+                // ask and store recipe instructions
+                char addStep = 'y';
+                cout << "--- Add Instructions for " << newRecipe.title << " ---\n";
+                while (addStep == 'y' || addStep == 'Y') {
+                    string step;
+                    cout << "Enter the instruction line: ";
+                    getline(cin, step);
+                    newRecipe.instructions.push_back(step);
+                    cout << "Add another instruction line? (y/n): ";
+                    cin >> addStep;
+                    cin.ignore();
+                }
+
+                // automatic cost calculation from pantry
+                calculateRecipeCost(newRecipe, myPantry);
+                cout << "Automatically calculated recipe cost: $" << fixed << setprecision(2) << newRecipe.cost << endl;
+                
+                // looking to see if recipe currently exists
+                bool recipeFound = false;
+                for (auto& existingRecipe : myRecipes) {
+                    if (toLowerCase(existingRecipe.title) == toLowerCase(newRecipe.title)) {
+                        existingRecipe = newRecipe;
+                        recipeFound = true;
+                        cout << "Match found! Updated existing recipe. \n";
+                        break;
+                    }
+                }
+                if (!recipeFound) {
+                    myRecipes.push_back(newRecipe);
+                    cout << "New recipe added to the cookbook. \n";
+                }
+
+                cout << "Cookbook updated! Add another recipe? (y/n): ";
+                cin >> addMore;
+                cin.ignore();
+                cout << "\n";
+                }
+                while (addMore == 'y' || addMore == 'Y');
+
+                saveRecipe(myRecipes);
+            break;
+            }
+
+            case '5': {
+                break;
+            }
+
+            case '6': {
             savePantry(myPantry);
+            saveRecipe(myRecipes);
             break;
             }
 
