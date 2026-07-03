@@ -14,7 +14,7 @@ using namespace std;
 
 int main()
 {
-    float width = 0.00, height = 0.00, hypoten = 0.00, theta = 0.00;
+    double width = 0.00, height = 0.00, hypoten = 0.00, theta = 0.00;
     int thetaForRounding;
 
     cout << "What is the width of the right triangle? ";
@@ -25,20 +25,28 @@ int main()
 
     hypoten = sqrt( pow(width,2) + pow(height,2) );
 
-    theta = (atan2(height,width))*180/3.141592;
+    theta = (atan2(height,width))*180/( 3.1415926 );
 
+
+
+   
+    thetaForRounding = theta*1000; 
+    if (thetaForRounding % 10 < 5)
+{
+    theta = floor(theta*100)/100;
+}
+
+if (thetaForRounding % 10 >= 5)
+{
+    ceil(theta*100)/100;
+}
+
+if (theta == 53.13 || theta == 36.87)
+{
+    cout << "This is a 3, 4, 5 triangle\n";
+}
+else 
+    cout << "This is not a 3, 4, 5 triangle";
     cout << "hypotenuse = " << hypoten << "\n";
     cout << "theta = " << theta<< "\n";
-    if (abs(theta - 53.13) <0.001 || abs(theta - 36.87) < 0.0015)
-    {
-        cout << "The triangle entered was a 3, 4, 5 triangle";
-    }
-    if (abs(theta - 60) <0.001 || abs(theta - 30 < 0.001))
-    {
-        cout << "The triangle entered was a 30, 60, 90 triangle";
-    }
-    if (abs(theta - 45) < 0.001)
-    {
-        cout << "The tirangle entered was a 45, 45, 90 triangle";
-    }
 }

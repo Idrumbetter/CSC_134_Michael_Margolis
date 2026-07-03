@@ -8,6 +8,7 @@
 // include the iostream library for input and output
 #include <iostream>
 #include <cmath>
+#include <iomanip>
 
 //use the standard namespace to avoid having to use std:: before every standard library function
 using namespace std;
@@ -25,20 +26,16 @@ int main()
 
     hypoten = sqrt( pow(width,2) + pow(height,2) );
 
-    theta = (atan2(height,width))*180/3.141592;
+    theta = (atan2(height,width))*180/3.141592*100;
+
+    thetaForRounding = theta;
+
+    theta = thetaForRounding / 1000.00;
 
     cout << "hypotenuse = " << hypoten << "\n";
     cout << "theta = " << theta<< "\n";
     if (abs(theta - 53.13) <0.001 || abs(theta - 36.87) < 0.0015)
     {
-        cout << "The triangle entered was a 3, 4, 5 triangle";
-    }
-    if (abs(theta - 60) <0.001 || abs(theta - 30 < 0.001))
-    {
-        cout << "The triangle entered was a 30, 60, 90 triangle";
-    }
-    if (abs(theta - 45) < 0.001)
-    {
-        cout << "The tirangle entered was a 45, 45, 90 triangle";
+        cout << "3,4,5 triangle";
     }
 }
