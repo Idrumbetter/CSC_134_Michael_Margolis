@@ -14,21 +14,27 @@ prupose: a list of ingredients and recipes that can be called to automatically b
 
 using namespace std;
 
-// =============================
-// Data structure definition
-// =============================
+// ===========================================
+//         Data structure definition
+// ===========================================
+
+// this store pantry item information in an array
 struct PantryItem {
     string name;
-    int quantity;
+    double quantity;
     double price;
 };
 
+
+// this stores ingredient information that is important to the recipe
 struct Ingredient{
     string name;
     double amount;
     string unit;
 };
 
+
+// this stores recipe information in an array
 struct Recipe {
     string title;
     vector<Ingredient> ingredients;
@@ -36,9 +42,11 @@ struct Recipe {
     double cost;
 };
 
-// =============================
-// Functions to call
-// =============================
+
+
+// ============================================
+//              Functions to call
+// ============================================
 
 //this function lowercases the string to avoid duplicates
 string toLowerCase(string str) {
@@ -48,11 +56,11 @@ string toLowerCase(string str) {
     return str;
 }
 
+
 // this function saves the information to a .txt file
 void savePantry(const vector<PantryItem>& pantry) {
     // opens a file for writing (creates the file if it doesn't exist)
     ofstream outFile("pantry.txt");
-
     if (outFile.is_open()) {
         for (const auto& item : pantry) {
             // save data separated by spaces o newLines
@@ -64,6 +72,7 @@ void savePantry(const vector<PantryItem>& pantry) {
         cout << "Pantry saved successfully!\n";
     }
 }
+
 
 // this function saves the information to a .txt file
 void saveRecipe(const vector<Recipe>& recipeList) {
@@ -107,7 +116,7 @@ vector<PantryItem> loadPantry() {
 
         while (getline(inFile, name)) {
             if (getline(inFile, qtyStr) && getline(inFile, priStr)) {
-                int quantity = stoi(qtyStr);
+                double quantity = stod(qtyStr);
                 double price = stod(priStr);
                 loadedPantry.push_back({name, quantity, price});
             }
@@ -120,6 +129,7 @@ vector<PantryItem> loadPantry() {
 
     return loadedPantry;
 }
+
 
 // this function reads a stored file and converts the info back into useful data types and loads them
 vector<Recipe> loadRecipe() {
@@ -163,6 +173,7 @@ vector<Recipe> loadRecipe() {
     return loadedRecipes;
 }
 
+
 // this function updates the cost of a recipe based on the pantry pricing
 void calculateRecipeCost(Recipe& recipe, const vector<PantryItem>& pantry) {
     double totalCost = 0.0;
@@ -187,9 +198,12 @@ void calculateRecipeCost(Recipe& recipe, const vector<PantryItem>& pantry) {
     recipe.cost = totalCost;
 }
 
-// ==========================
-// The programs runtime
-// ==========================
+
+
+
+// ========================================
+//          The Program's Runtime
+// ========================================
 int main() {
     //loading stored data
     vector<PantryItem> myPantry = loadPantry();
@@ -204,7 +218,7 @@ int main() {
         cout << "1. View Pantry Stock\n";
         cout << "2. Add / Update Stock\n";
         cout << "3. View Cookbook\n";
-        cout << "4. Add / Update Recipes";
+        cout << "4. Add / Update Recipes\n";
         cout << "5. Consume / Remove Stock\n";
         cout << "6. Save & Exit\n";
         cout << "Enter your choice (1-6)"; 
@@ -223,7 +237,7 @@ int main() {
                     cout << "Your current pantry list:\n";
                     for (const auto& item : myPantry) {
                         cout << "- " << item.name
-                             << " | Qty: " << item.quantity
+                             << " | Qty: " << fixed << setprecision(2) << item.quantity
                              << " | Price: $" << fixed << setprecision(2) << item.price << endl;
                         }
                     }
@@ -372,6 +386,49 @@ int main() {
             }
 
             case '5': {
+                // message for if trying to access recipes but none exist
+                if (myRecipes.empty()) {
+                    cout << "Your cookbook is empty. Add recipes first!\n";
+                    break;
+                }
+
+                //prints an itemized list of recipes as a menu prompt
+                cout << "=== SELECT A RECIPE ===\n";
+                for (size_t i = 0; i < myRecipes.size(); ++i) {
+                    cout << i + 1 << ") " << myRecipes[i].title << endl;
+                }
+                cout << "0) Return to the Main Menu\n";
+
+                int recipeChoice;
+                cout << "Enter the number associated with the recipe you want: ";
+                cin >> recipeChoice;
+                cin.ignore();
+
+                if (recipeChoice == 0) {
+                    break;
+                }
+
+                if (recipeChoice > 0 && recipeChoice <= static_cast<int>(myRecipes.size())) {
+                    const auto& selctedRecipe = myRecipes[recipeChoice - 1];
+
+                    cout << "\n=================================\n";
+                    cout << "RECIPE: " << selctedRecipe.title << endl;
+                    cout << "COST:   $" << fixed << setprecision(2) << selctedRecipe.cost << endl;
+                    cout << "\n---------------------------------\n";
+
+                    cout << "Ingredients needed:\n";
+                    for (const auto& ing: selctedRecipe.ingredients) {
+                        cout << " -" << ing.name << ": " << ing.amount << " " << ing.unit << endl;
+                    }
+
+                    cout << "\nInstructions:\n";
+                    int stepNum = 1;
+                    for (const auto& step: selctedRecipe.instructions) {
+                        cout << "  " << stepNum << ") " << step << endl;
+                        stepNum++;
+                    }
+                    cout << "==================================="; 
+                } else {cout << "Invalid selction. Returning to the main menu.\n";}
                 break;
             }
 
