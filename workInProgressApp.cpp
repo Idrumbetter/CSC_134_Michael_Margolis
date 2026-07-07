@@ -1,5 +1,5 @@
 /*
-date: 07/02/2026
+date: 07/05/2026
 author: Michael Margolis
 prupose: a list of ingredients and recipes that can be called to automatically balance and give suggestions
 */
@@ -31,7 +31,9 @@ using namespace std;
 struct PantryItem {
     string name;
     double quantity;
+    string unit;
     double price;
+    
 };
 
 
@@ -66,6 +68,48 @@ struct Recipe {
 //              Functions to call
 // ============================================
 
+// Main Menu
+void mainMenu(char& choice){   
+    cout << "\n=== DIGITAL PANTRY MENU ===\n";
+    cout << "1. View Pantry Stock\n";
+    cout << "2. View Cookbook\n";
+    cout << "3. View Grocery List\n";
+    cout << "4. Save & Exit\n";
+    cout << "Enter your choice (1-4) "; 
+    cin >> choice;      // recieves input choice
+    cin.ignore();       // clears any additional temporary keyboard memory
+    cout << "\n";
+}
+
+// prints the pantry sub menu
+void pantryMenu(char& pantryChoice) {
+    char pantryMenuChoice = '0';
+
+    cout << "\n=== PANTRY MENU ===\n";
+    cout << "1. View Current Stock\n";
+    cout << "2. Add/Update Ingredients or Stock\n";
+    cout << "3. Remove Ingredient From Pantry\n";
+    cout << "4. Return to Main Menu\n";
+    cout << "\nEnter Your Choice: (1-4) ";
+    cin >> pantryChoice;
+    cin.ignore();
+    cout << "\n";
+}
+
+// prints the recipe sub menu
+
+// prints asking if you want to add, remove, or update stock 
+void cookbookMenu(char& choice) {
+    cout << "\n=== COOKBOOK MENU ===\n";
+    cout << "1. View Currently Stored Recipes\n";
+    cout << "2. Add/Update Recipes\n";
+    cout << "3. Remove Recipes\n";
+    cout << "4. Back to Pantry Menu\n";
+    cout << "Pick an option: (1-4) ";
+    cin >> choice;
+    cin.ignore();
+}
+
 //this function lowercases the string to avoid duplicates
 string toLowerCase(string str) {
     transform(str.begin(), str.end(), str.begin(), [](unsigned char c) {
@@ -73,7 +117,6 @@ string toLowerCase(string str) {
     });
     return str;
 }
-
 
 // this function saves the information to a .txt file
 void savePantry(const vector<PantryItem>& pantry) {
@@ -92,6 +135,43 @@ void savePantry(const vector<PantryItem>& pantry) {
         cout << "Error: Could not open pantry.txt for writing.\n";
     }
 }
+
+// removes ingredients from the pantry.txt file
+void deleteIngredient(vector<PantryItem>& pantry) {
+    string itemName;
+    bool foundIngredient = false;
+    char sure = '0';
+    cout << "\nWhat ingredient do you want to delete? ";
+    getline(cin, itemName); 
+    cout << endl;
+
+    for (size_t i = 0; i < pantry.size(); ++i) {
+        if (toLowerCase(pantry[i].name) == toLowerCase(itemName)) {
+            foundIngredient = true;
+
+            cout << "Are you sure you want to remove this ingredient from your pantry list? (y/n)";
+            cin >> sure;
+            cin.ignore();
+
+            if (sure == 'y' || sure == 'Y') {
+                pantry.erase(pantry.begin()+i);
+                cout << itemName << " was removed from the pantry.\n\n";
+            break;
+            } else {
+                cout << "The ingredient was not deleted. \n\n";
+            }
+        }
+    }
+    if (!foundIngredient) {
+        cout << "Ingredient was not found.\n\n";
+    }
+    savePantry(pantry);
+}
+
+
+
+
+
 
 
 // this function saves the information to a .txt file
@@ -130,13 +210,23 @@ vector<PantryItem> loadPantry() {
     if (inFile.is_open()) {
         string name;
         string qtyStr;
+        string unitStr;
         string priStr;
 
         while (getline(inFile, name)) {
-            if (getline(inFile, qtyStr) && getline(inFile, priStr)) {
-                double quantity = stod(qtyStr);
-                double price = stod(priStr);
-                loadedPantry.push_back({name, quantity, price});
+            if (getline(inFile, qtyStr) && 
+                getline(inFile, unitStr) && 
+                getline(inFile, priStr)) {
+
+                try {
+                    double quantity = stod(qtyStr);
+                    double price = stod(priStr);
+                
+                    loadedPantry.push_back({name, quantity, unitStr, price});
+                }
+                catch (const exception& e) {
+                    cout << "Error finding data for item '" << name << "'. Skipping line.\n";
+                }
             }
         }
         inFile.close();
@@ -217,10 +307,7 @@ void calculateRecipeCost(Recipe& recipe, const vector<PantryItem>& pantry) {
 }
 
 
-
-
-
-
+// prints the ingredients stored in the pantry.txt file
 void displayPantry(const vector<PantryItem>& pantry) {
     // makes sure the .txt file actually loaded to ram and has any information stored in it
     if (pantry.empty()) {
@@ -231,12 +318,11 @@ void displayPantry(const vector<PantryItem>& pantry) {
         for (const auto& item : pantry) {
             cout << "- " << item.name
                  << " | Qty: " << fixed << setprecision(2) << item.quantity
-                 << " | Price: $" << fixed << setprecision(2) << item.price << endl;
+                 << " | Unit: " << item.unit
+                 << " | Price: $" << fixed << setprecision(2) << item.price << endl;  
         }
     }
 }
-
-
 
 
 // function to update pantry stock
@@ -250,6 +336,9 @@ void updatePantry(vector<PantryItem>& pantry) {
 
         cout << "Enter the quantity: ";
         cin >> newItem.quantity;
+
+        cout << "Enter the unit: ";
+        cin >> newItem.unit;
 
         cout << "Enter the price: ";
         cin >> newItem.price;
@@ -384,7 +473,50 @@ void addRecipe(vector<Recipe>& recipe, const vector<PantryItem>& pantry) {
     saveRecipe(recipe);
 }
 
+void deleteRecipe(vector<Recipe>& recipe) {
+    string recipeName;
+    bool foundRecipe = false;
+    char sure = '0';
 
+    if (recipe.empty()) {
+        cout << "\nYour cookbook is currently empty. There are no recipes to delete.\n";
+        return;
+    }
+
+    for (size_t i = 0; i < recipe.size(); ++i) {
+        cout << i+1 << ") " << recipe[i].title << endl;
+    }
+    cout << "--------------------------------\n";
+
+    if (cin.peek() == '\n') {
+        cin.ignore();
+    }
+    cout <<"What recipe do you wish to delete? ";
+    getline(cin, recipeName);
+    cout << endl;
+
+    for (size_t i = 0; i < recipe.size(); ++i) {
+        if (toLowerCase(recipe[i].title) == toLowerCase(recipeName)) {
+            foundRecipe = true;
+
+            cout << "Are you sure you want to remove this recipe from your cookbook? (y/n) ";
+            cin >> sure;
+            cin.ignore();
+
+            if (sure == 'y' || sure == 'Y') {
+                recipe.erase(recipe.begin()+i);
+                cout << recipeName << " was removed from your cookbook.\n\n";
+            break;
+            } else {
+                cout << "The recipe was not deleted. \n\n";
+            }
+        }
+    }
+    if (!foundRecipe) {
+        cout << "Recipe  was not found.\n\n";
+    }
+    saveRecipe(recipe);
+}
 
 
 
@@ -402,229 +534,103 @@ int main() {
     vector<Recipe> myRecipes = loadRecipe();
     
     char choice = '0'; //vaiable used to choose from a menu of options
+    char pantryChoice = '0';
+    char cookbookChoice = '0';
 
     // a while loop that breaks when the user enters 4. This will continue running and asking for new inputs. 
-    while (choice != '7') {
+    while (choice != '4') {
 
-        // pantry menu text to explain the options
-        cout << "\n=== DIGITAL PANTRY MENU ===\n";
-        cout << "1. View Pantry Stock\n";
-        cout << "2. Add / Update Stock\n";
-        cout << "3. View Cookbook\n";
-        cout << "4. Add / Update Recipes\n";
-        cout << "5. Ready to Make Recipies\n";
-        cout << "6. Consume / Remove Stock\n";
-        cout << "7. Save & Exit\n";
-        cout << "Enter your choice (1-7) "; 
-        cin >> choice;      // recieves input choice
-        cin.ignore();       // clears any additional temporary keyboard memory
-        cout << "\n";
-
+        mainMenu(choice);
 
         // switch block that runs whatever case value stored from choice
         switch (choice) {
 
             // this case is to view the current list of ingredients in the pantry
             case '1': {
-                //calling the display pantry function block
-                displayPantry(myPantry);
-                break;
-            }
+                pantryChoice = '0';
+                while (pantryChoice != '4') {
+                    pantryMenu(pantryChoice);
 
-
-            // add / update pantry stock
-            case '2': {
-            updatePantry(myPantry);
-            break;
-            }
-
-
-            // view the list of recipes currently stored (Still need to add a terminal for sections like breakfast, lunch and dinner, and a shortcut to ready to cook meals.)
-            case '3': {
-                viewRecipes(myRecipes);
-                break;
-            }
-
-
-            // this adds a Recipe/updates an existing recipe
-            case '4': {
-            addRecipe(myRecipes, myPantry);
-            break;
-            }
-
-
-
-
-
-            //
-            case '5': {
-                int recipeChoice = 0;
-                if (myRecipes.empty()) {
-                    cout << "Your cookbook is empty. Add recipes first.\n";
-                    break;
-                }
-
-                cout << "=== RECIPES YOU CAN MAKE RIGHT NOW ===\n";
-                int cookableCount = 0;
-
-                // scanning and printing recipes the user has ingredients for
-                for (size_t i = 0; i< myRecipes.size(); ++i) {
-                    const auto& recipe = myRecipes[i];
-                    bool canCookRecipe =  true;
-
-                    // Check if every single ingredient is available for this recipe
-                    for (const auto& ing: recipe.ingredients) {
-                        bool foundInPantry = false;
-
-                        for (const auto& pantryItem: myPantry) {
-                            if (toLowerCase(ing.name) == toLowerCase(pantryItem.name)) {
-                                foundInPantry = true;
-
-                                if (pantryItem.quantity < ing.amount) {
-                                    canCookRecipe = false;
-                                }
-                                break;
-                            }
+                    switch (pantryChoice) {
+                        case '1': {
+                            displayPantry(myPantry);
+                            break;
                         }
-                        if (!foundInPantry) {
-                            canCookRecipe = false;
+
+                        case '2': {
+                            updatePantry(myPantry);
+                            break;
                         }
-                        if (!canCookRecipe) break;
-                    }
-                    if (canCookRecipe) {
-                        cout << i+1 << ") " << recipe.title << " (Cost: $" << fixed << setprecision(2) << recipe.cost << ")\n";
-                        cookableCount++;
-                    }
-                }
-                if (cookableCount == 0) {
-                    cout << "Unfortunately, your pantry is insufficiently stocked to complete any reccipes as they are.\n";
-                    cout << "Go to the grocery store and restock the pantry\n";
-                } else {
-                    bool choosingRecipe = true;
-                    do {
-                        cout << "0) return to the main menu\n";
-                        cout << "What recipe would you like to cook? (0 - " << myRecipes.size() << ") ";
-                        cin >> recipeChoice;
-                        cin.ignore();
-
-                        if (recipeChoice > 0 && recipeChoice <= myRecipes.size()){
-                            char confirmChoice;
-                            cout << "You selected " << myRecipes[recipeChoice-1].title << ". Are you sure? (y/n) ";
-                            cin >> confirmChoice;
-                            cin.ignore();
-
-                            if (confirmChoice == 'y' || confirmChoice == 'Y') {
-                                const auto& selectedRecipe = myRecipes[recipeChoice-1];
-                                // removing Items from the pantry
-                                for (const auto& ing: selectedRecipe.ingredients) {
-                                    for (auto& pantryItem : myPantry) {
-                                        if (toLowerCase(ing.name) == toLowerCase(pantryItem.name)) {
-                                            cout << ing.name << " was at " << pantryItem.quantity << " and is now at ";
-                                            pantryItem.quantity -= ing.amount;
-                                            cout << pantryItem.quantity << endl;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                savePantry(myPantry);
                         
-                                // printing the Recipe details
-                                cout << "\n=================================\n";
-                                cout << "Recipe: " << selectedRecipe.title << endl;
-                                cout << "-------------------------------\n";
-                                cout << "Ingredients needed:\n";
-                                for (const auto& ing: selectedRecipe.ingredients) {
-                                    cout << " - " << ing.name << ": " << ing.amount << " " << ing.unit << endl;
-                                }
-                                
-                                cout << "\nInstruction:\n";
-                                int stepNum = 1;
-                                for (const auto& step: selectedRecipe.instructions) {
-                                    cout << stepNum << ") " << step << endl;
-                                    stepNum++;
-                                }
-                                cout << endl;
-
-                                choosingRecipe = false;
-                                cout << "Enjoy the food and recipe!\n";
-                            } else{ }
-                        } else{break;}
+                        case '3': {
+                            // deleting pantry ingredients from the .txt file
+                            displayPantry(myPantry);
+                            deleteIngredient(myPantry);
+                            break;
+                        }
+                        case '4': {
+                            // saves pantry and exits to main menu
+                            savePantry(myPantry);
+                            break;
+                        }
+                        default: {
+                            cout << "Invalid Selection. Please Select From Our Menu. \n";
+                        }
                     }
-                    while(choosingRecipe);
                 }
+                cout << "Returning to the Main Menu...\n";
                 break;
             }
 
+            case '2': {
+                //open the cookbook menu
+                cookbookChoice = '0';
+                while (cookbookChoice!= '4') {
+                    cookbookMenu(cookbookChoice);
 
+                    switch (cookbookChoice) {
+                        case '1': {
+                            viewRecipes(myRecipes);
+                            break;
+                        }
 
+                        case '2': {
+                            addRecipe(myRecipes, myPantry);
+                            break;
+                        }
 
-
-            // wanting to make a specific recipe, regardless of what is in the pantry
-            case '6': {
-                // message for if trying to access recipes but none exist
-                if (myRecipes.empty()) {
-                    cout << "Your cookbook is empty. Add recipes first!\n";
-                    break;
-                }
-
-                //prints an itemized list of recipes as a menu prompt
-                cout << "=== SELECT A RECIPE ===\n";
-                for (size_t i = 0; i < myRecipes.size(); ++i) {
-                    cout << i + 1 << ") " << myRecipes[i].title << endl;
-                }
-                cout << "0) Return to the Main Menu\n";
-
-                int recipeChoice;
-                cout << "Enter the number associated with the recipe you want: ";
-                cin >> recipeChoice;
-                cin.ignore();
-
-                if (recipeChoice == 0) {
-                    break;
-                }
-
-                if (recipeChoice > 0 && recipeChoice <= static_cast<int>(myRecipes.size())) {
-                    const auto& selctedRecipe = myRecipes[recipeChoice - 1];
-
-                    cout << "\n=================================\n";
-                    cout << "RECIPE: " << selctedRecipe.title << endl;
-                    cout << "COST:   $" << fixed << setprecision(2) << selctedRecipe.cost << endl;
-                    cout << "\n---------------------------------\n";
-
-                    cout << "Ingredients needed:\n";
-                    for (const auto& ing: selctedRecipe.ingredients) {
-                        cout << " -" << ing.name << ": " << ing.amount << " " << ing.unit << endl;
+                        case '3': {
+                            //remove recipes
+                            deleteRecipe(myRecipes);
+                            break;
+                        }
+                        case '4': {
+                            saveRecipe(myRecipes);
+                            break;
+                        }
+                        default: {
+                            if (cookbookChoice!='4') {
+                                cout << "Error. Invalid input recieved.\n";
+                            }
+                            break;
+                        }
                     }
-
-                    cout << "\nInstructions:\n";
-                    int stepNum = 1;
-                    for (const auto& step: selctedRecipe.instructions) {
-                        cout << "  " << stepNum << ") " << step << endl;
-                        stepNum++;
-                    }
-                    cout << "==================================="; 
-                } else {cout << "Invalid selction. Returning to the main menu.\n";}
+                }
+                cout << "Returning to the Main Menu...\n";
                 break;
             }
 
-
-
-
-
-            //
-            case '7': {
-            savePantry(myPantry);
-            saveRecipe(myRecipes);
-            break;
+            case '3': {
+                //Grocery List
+                break;
             }
 
-            // this case covers anything not covered in the other case options
-            default: {
-                cout << "The input recieved is an invalid selection, please try again. \n";
-                break;
+            case '4': {
+                savePantry(myPantry);
+                saveRecipe(myRecipes);
+                cout << "Closing the program. Thanks for staying up to date!\n";
             }
         }
-    }
-    return 0;
+    }         
 }
+

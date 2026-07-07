@@ -1,8 +1,10 @@
 /*
 date: 7/2/2026
 author: Mr. Talbert (Comments by Michael Margolis)
-purpose: 
+purpose: this program takes the test scores of the class and tells you the numuber of passing scores, the class average, and the number of tests scored
 */
+
+//video link: https://youtu.be/RHWs6K_jCoM?si=gIsBPk6GYQHA4CZh or https://youtu.be/RHWs6K_jCoM
 
 // including the iostream library in c++
 #include <iostream>
@@ -16,7 +18,7 @@ int main()
     int score;                      // initializing an integer variable without an assigned value
     int count = 0;                  // initializing an integer variable and assigning it a value of 0
     int passingScores = 0;          // initializing an integer variable and assigning it a value of 0
-    float total = 0.0f;             // initializing a float variable and assigning it a value of 0.0f, which is strictly a float number and to use siingle precision
+    float total = 0.0f;             // initializing a float variable and assigning it a value of 0.0f, which is strictly a float number and to use single precision
     bool continueEntering = true;   // intitializing a boolean variable to store the value of true
 
     // starting a while loop that loops while continue entering is true
@@ -42,7 +44,7 @@ int main()
         cin >> continueEntering;
     }
 
-    float average = 0.0f;       // initializing a float variable and assigning it a value of 0.0f, which is strictly a float number and to use siingle precision
+    float average = 0.0f;       // initializing a float variable and assigning it a value of 0.0f, which is strictly a float number and to use single precision
 
     // tests that count or number of times through the while loop was not more than 0 times
     if (count > 0)
@@ -61,7 +63,7 @@ int main()
     // assignes a boolean variable the value of the comparison of the variable average is greater than or equal to 70.0f
     bool classPassed = average >= 70.0f;
 
-    // prints if the class passed as a whole with the average of the scores entered
+    // prints 1 if the class passed as a whole with the average of the scores entered or zero if the class failed
     cout << "Class Average Passing: " << classPassed << endl;
 
     // ends the main function

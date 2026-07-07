@@ -20,7 +20,7 @@ int main()
     int minNum = 0, maxNum = 100;
 
     // for loops to that increments minNum by one until it matches maxNum
-    for (minNum; minNum<maxNum; minNum++)
+    for (minNum; minNum<maxNum; ++minNum)
     {
         // these if statements are for indexing the table center line
         if (minNum < 10){
