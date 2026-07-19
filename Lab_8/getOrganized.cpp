@@ -10,11 +10,21 @@
 using namespace std;
 
 int main() {
-    const int TOTAL_SIZE = 10;
-    int numbers[TOTAL_SIZE] = {10,90,2,25,44,88,0,4};
+    const int SIZE = 10;
+    int numbers[SIZE] = {10,90,2,25,44,88,0,4};
 
-    for (int n=0; n<TOTAL_SIZE-1;++n) {
-        for (int y=0; y < TOTAL_SIZE-n-1;++y) {
+    cout << "The original array was: ";
+    for (int n=0;n<SIZE;++n) {
+        if (n==SIZE-1) {
+            cout << "and " << numbers[n];    
+        } else {
+        cout << numbers[n] << ", ";
+        }
+    }
+
+    cout << "\n\nThe newly organized array is: ";
+    for (int n=0; n<SIZE-1;++n) {
+        for (int y=0; y < SIZE-n-1;++y) {
             if (numbers[y] > numbers[y+1]) {
                 int holdThis = numbers[y];
                 numbers[y] = numbers[y+1];
@@ -22,8 +32,12 @@ int main() {
             }
         }
     }
-    for (int n=0;n<TOTAL_SIZE;++n) {
-        cout << numbers[n] << endl;
+    for (int n=0;n<SIZE;++n) {
+        if (n==SIZE-1) {
+            cout << "and " << numbers[n];    
+        } else {
+        cout << numbers[n] << ", ";
+        }
     }
     return 0;
 }

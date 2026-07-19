@@ -16,4 +16,5 @@ int main() {
     for (int n=0; n<size;++n) {
         cout << "Planet " << n+1 << ": " << planetArray[n] << endl;
     }
+    return 0;
 }

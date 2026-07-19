@@ -23,4 +23,5 @@ int main() {
     }
 
     cout << "The gradepoint average was %" << fixed << setprecision(2) << sum/10.00 << endl;
+    return 0;
 }

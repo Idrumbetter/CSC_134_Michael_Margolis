@@ -15,4 +15,5 @@ int main() {
     for (int n=0; n<size;++n) {
         cout << "Month " << n+1 << " has " << monthArray[n] << " days.\n\n"; 
     }
+    return 0;
 }

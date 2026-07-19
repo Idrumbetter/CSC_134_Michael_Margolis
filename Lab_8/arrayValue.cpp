@@ -12,8 +12,9 @@ int main() {
     const int size = 7;
     int array[size] = {1,2,4,8};
 
-    cout << "The order of the planets from closest to the sun to furthest are as shown below:\n";
+    cout << "The value of each position of the array are in order as such:\n";
     for (int n=0; n<size;++n) {
         cout << "Position " << n+1 << ": " << array[n] << endl;
     }
+    return 0;
 }

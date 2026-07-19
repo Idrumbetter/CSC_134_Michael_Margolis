@@ -15,4 +15,5 @@ int main() {
     for (int n=0; n<size;++n) {
         cout << "Day " << n+1 << ": " << dayArray[n] << endl;
     }
+    return 0;
 }

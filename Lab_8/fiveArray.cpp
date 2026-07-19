@@ -17,4 +17,5 @@ int main() {
         sum += sumArray[n];
     }
     cout << "The sum of the array is " << sum << endl;
+    return 0;
 }
