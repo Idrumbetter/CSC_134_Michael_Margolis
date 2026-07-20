@@ -6,7 +6,6 @@
 
 // including the necessary libraries from c++
 #include <iostream>
-#include <iomanip>
 
 // using the namespace std to avoid having to write std::
 using namespace std;
