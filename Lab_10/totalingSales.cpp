@@ -1,7 +1,7 @@
 /*
 @date: 07/19/2026
 @author: Michael Margolis
-@purpose: this program stores sales data for desired number of days
+@purpose: this program stores sales data for desired number of days and totals the sales to date
 */
 
 // including the required c++ libraries
