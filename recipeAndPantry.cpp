@@ -81,7 +81,7 @@ void savePantry(const vector<PantryItem>& pantry) {
     ofstream outFile("pantry.txt");
     if (outFile.is_open()) {
         for (const auto& item : pantry) {
-            // save data separated by spaces o newLines
+            // save data separated by spaces to newLines
             outFile << item.name << "\n";
             outFile << item.quantity << "\n";
             outFile << item.price << "\n";

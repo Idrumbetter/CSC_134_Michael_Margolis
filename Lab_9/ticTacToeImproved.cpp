@@ -10,8 +10,48 @@
 // using namespace std to remove needing std:: 
 using namespace std;
 
+void printBoard(string board[]){
+    // printing the board to the console to initate the game by running through the board array
+    for (int n = 0; n < 25; ++n) {
+        // this checks if we need to move to the next like so the game lines up properly
+        if (n == 5 || n== 10 || n==15 || n==20) {
+            cout << endl;
+        }
+    // printing the board based on the nth index position
+    cout << board[n];
+    }    
+}
+
+void checkForWin(string board[], bool &win) {
+    if (board[0] != "   " && board[0]==board[2] && board[0]==board[4] && board[2]==board[4]) {
+        win = true;
+    }
+    if (board[10] != "   " && board[10]==board[12] && board[12]==board[14] && board[10]==board[14]) {
+        win = true;
+    }
+    if (board[22] != "   " && board[22]==board[20] && board[22]==board[24] && board[20]==board[24]) {
+        win = true;
+    }
+    if (board[0] != "   " && board[0]==board[10] && board[0]==board[20] && board[10]==board[20]) {
+        win = true;
+    }
+    if (board[2] != "   " && board[2]==board[12] && board[2]==board[22] && board[12]==board[22]) {
+        win = true;
+    }
+    if (board[4] != "   " && board[4]==board[14] && board[4]==board[24] && board[14]==board[24]) {
+        win = true;
+    }
+    if (board[0] != "   " && board[0]==board[12] && board[0]==board[24] && board[12]==board[24]) {
+        win = true;
+    }
+    if (board[4] != "   " && board[4]==board[12] && board[4]==board[20] && board[12]==board[20]) {
+        win = true;
+    }
+}
+
 // the main function beginning
 int main() {
+    system("chcp 65001 > nul");
     // setting up a constant variable for the number of turns to lock the amount of data an array can hold
     const int SIZE = 9;
     // setting up the tic tac toe board display as an array
@@ -36,19 +76,13 @@ int main() {
     
     // setting up a game decision history to store the decisions of both players
     string playerChoices[SIZE] = {};
-
+    
+    bool win = false;
+    
     // printing an opening statement for beginning the match
     cout << "Welcome to tic-tac-toe. Are you ready to duel!\n\n";
 
-    // printing the board to the console to initate the game by running through the board array
-    for (int n = 0; n < 25; ++n) {
-        // this checks if we need to move to the next like so the game lines up properly
-        if (n == 5 || n== 10 || n==15 || n==20) {
-            cout << endl;
-        }
-    // printing the board based on the nth index position
-    cout << board[n];
-    }
+    printBoard(board);
 
     // setting a for loop for the max number of turns a game of tic tac toe can go
     for (int x=0; x<9;++x) {
@@ -105,15 +139,15 @@ int main() {
                 // turn validChoice true to break free of the while loop, and permenantly saves the input //
                 // to playerChoices                                                                       //
                 if (spotTaken == false) {
-                if (currentInput == "1") {board[0] = " O "; validChoice = true; playerChoices[x]=currentInput;}
-                if (currentInput == "2") {board[2] = " O "; validChoice = true; playerChoices[x]=currentInput;}
-                if (currentInput == "3") {board[4] = " O "; validChoice = true; playerChoices[x]=currentInput;}
-                if (currentInput == "4") {board[10] = " O "; validChoice = true; playerChoices[x]=currentInput;}
-                if (currentInput == "5") {board[12] = " O "; validChoice = true; playerChoices[x]=currentInput;}
-                if (currentInput == "6") {board[14] = " O "; validChoice = true; playerChoices[x]=currentInput;}
-                if (currentInput == "7") {board[20] = " O "; validChoice = true; playerChoices[x]=currentInput;}
-                if (currentInput == "8") {board[22] = " O "; validChoice = true; playerChoices[x]=currentInput;}
-                if (currentInput == "9") {board[24] = " O "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "1") {board[0] = " \033[34mO\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "2") {board[2] = " \033[34mO\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "3") {board[4] = " \033[34mO\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "4") {board[10] = " \033[34mO\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "5") {board[12] = " \033[34mO\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "6") {board[14] = " \033[34mO\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "7") {board[20] = " \033[34mO\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "8") {board[22] = " \033[34mO\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "9") {board[24] = " \033[34mO\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
                 // this if statement is for any input that is completely out of the scope of the game
                 if (currentInput != "1" && currentInput != "2" && currentInput != "3" && 
                     currentInput != "4" && currentInput != "5" && currentInput != "6" && 
@@ -138,15 +172,15 @@ int main() {
                     if (currentInput == playerChoices[w]) { spotTaken = true;}
                 }
                 if (spotTaken == false) {
-                if (currentInput == "1") {board[0] = " X "; validChoice = true; playerChoices[x]=currentInput;}
-                if (currentInput == "2") {board[2] = " X "; validChoice = true; playerChoices[x]=currentInput;}
-                if (currentInput == "3") {board[4] = " X "; validChoice = true; playerChoices[x]=currentInput;}
-                if (currentInput == "4") {board[10] = " X "; validChoice = true; playerChoices[x]=currentInput;}
-                if (currentInput == "5") {board[12] = " X "; validChoice = true; playerChoices[x]=currentInput;}
-                if (currentInput == "6") {board[14] = " X "; validChoice = true; playerChoices[x]=currentInput;}
-                if (currentInput == "7") {board[20] = " X "; validChoice = true; playerChoices[x]=currentInput;}
-                if (currentInput == "8") {board[22] = " X "; validChoice = true; playerChoices[x]=currentInput;}
-                if (currentInput == "9") {board[24] = " X "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "1") {board[0] = " \033[31mX\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "2") {board[2] = " \033[31mX\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "3") {board[4] = " \033[31mX\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "4") {board[10] = " \033[31mX\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "5") {board[12] = " \033[31mX\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "6") {board[14] = " \033[31mX\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "7") {board[20] = " \033[31mX\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "8") {board[22] = " \033[31mX\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
+                if (currentInput == "9") {board[24] = " \033[31mX\033[0m "; validChoice = true; playerChoices[x]=currentInput;}
                 if (currentInput != "1" && currentInput != "2" && currentInput != "3" && 
                     currentInput != "4" && currentInput != "5" && currentInput != "6" && 
                     currentInput != "7" && currentInput != "8" && currentInput != "9") {
@@ -157,46 +191,21 @@ int main() {
         }
             player = '1';
         }
-        for (int n = 0; n < 25; ++n) {
-            if (n == 5 || n== 10 || n==15 || n==20) {
-                cout << endl;
-            }
-            cout << board[n];
-        }
-        cout << endl;
-        if (board[0] != "   " && board[0]==board[2] && board[0]==board[4] && board[2]==board[4]) {
-            if (x%2==0) {cout << "\nPlayer One Wins!!!";return 0;}
-            else {cout << "\nPlayer Two Wins!!!";return 0;}
-        }
-        if (board[10] != "   " && board[10]==board[12] && board[12]==board[14] && board[10]==board[14]) {
-            if (x%2==0) {cout << "\nPlayer One Wins!!!";return 0;}
-            else {cout << "\nPlayer Two Wins!!!";return 0;}
-        }
-        if (board[22] != "   " && board[22]==board[20] && board[22]==board[24] && board[20]==board[24]) {
-            if (x%2==0) {cout << "\nPlayer One Wins!!!";return 0;}
-            else {cout << "\nPlayer Two Wins!!!";return 0;}
-        }
-        if (board[0] != "   " && board[0]==board[10] && board[0]==board[20] && board[10]==board[20]) {
-            if (x%2==0) {cout << "\nPlayer One Wins!!!";return 0;}
-            else {cout << "\nPlayer Two Wins!!!";return 0;}
-        }
-        if (board[2] != "   " && board[2]==board[12] && board[2]==board[22] && board[12]==board[22]) {
-            if (x%2==0) {cout << "\nPlayer One Wins!!!";return 0;}
-            else {cout << "\nPlayer Two Wins!!!";return 0;}
-        }
-        if (board[4] != "   " && board[4]==board[14] && board[4]==board[24] && board[14]==board[24]) {
-            if (x%2==0) {cout << "\nPlayer One Wins!!!";return 0;}
-            else {cout << "\nPlayer Two Wins!!!";return 0;}
-        }
-        if (board[0] != "   " && board[0]==board[12] && board[0]==board[24] && board[12]==board[24]) {
-            if (x%2==0) {cout << "\nPlayer One Wins!!!";return 0;}
-            else {cout << "\nPlayer Two Wins!!!";return 0;}
-        }
-        if (board[4] != "   " && board[4]==board[12] && board[4]==board[20] && board[12]==board[20]) {
-            if (x%2==0) {cout << "\nPlayer One Wins!!!";return 0;}
-            else {cout << "\nPlayer Two Wins!!!";return 0;}
-        }
 
+        cout << endl;
+    checkForWin(board, win);
+    if (win == true) {
+        if (x % 2 == 0) {
+            cout << "Player 1 Wins\n";
+            printBoard(board);
+            return 0;
+        } else {
+            cout << "Player 2 Wins\n";
+            printBoard(board);
+            return 0;
+        }
+    }
+    printBoard(board);
     }
     cout << "\nThe Game ended in a draw!!! Cats Game!!!";
 }
